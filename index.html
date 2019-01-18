@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Map</title>
+    <script src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyB90FxtYG_ybAYXGkz0ybkmkboE2nEbezI"></script>
+    <style>
+        #main, #top, #buttom{
+            border: 3px solid black;
+            border-radius: 30px;
+            text-align: center;
+            box-shadow: cyan 30px 20px 90px inset,orange -30px -20px 90px inset;
+        }
+        #main{
+            width: 80%;
+            height: 600px;
+            margin: 10px auto;
+            
+        }
+
+        #top{
+            width: 90%;
+            height: 20%;
+            margin: 20px auto;        
+        }
+
+        #buttom, #buttom2{
+            width: 90%;
+            height: 70%;
+            margin: 10px auto;
+        }
+        #buttom2{
+            display: none;
+        }
+        
+
+        input[type=button]{
+            width: 170px;
+            height: 40px;
+            margin: 40px;
+            border: 2px solid cyan;
+            border-radius: 10px;
+            background: -webkit-linear-gradient(top, cyan, blue);
+            font-size: 17px;
+            color: white;
+        }
+
+        #divInfo{
+            width: 70%;
+            height: 60%;
+            margin: 50px auto;
+            border: 2px solid blue;
+            border-radius: 40px;
+            background-color: yellow;
+            box-shadow: cyan 30px 20px 200px inset,cyan -30px -20px 200px inset;
+            
+        }
+        p{
+            margin: 10px 10px 2px 10px;
+            font-family: tahoma;
+            font-weight: bold;
+            font-size: 12px;
+        }
+        #latTxt, #longTxt, #accTxt, #timeTxt{
+            width: 80%;
+            height: 20px;
+            background-color: rgb(230, 223, 223)
+        }
+
+
+        
+    </style>
+    <script>
+        window.addEventListener('load', doitfirst);
+        function doitfirst() {
+           map = document.getElementById('buttom');
+           info = document.getElementById('buttom2');
+
+           divInfo = document.getElementById('divInfo');
+
+           latTxt = document.getElementById('latTxt');
+           longTxt = document.getElementById('longTxt');
+           accTxt = document.getElementById('accTxt');
+           timeTxt = document.getElementById('timeTxt');
+        }
+
+        function getmylocation() {
+            //1- check
+            if(navigator.geolocation)
+            {
+                //2- get confirmation
+                navigator.geolocation.getCurrentPosition(getposition, errorhandeler);
+            }
+            else {
+                map.innerText = 'Sorry , Geolocation Nnot Supported at you !';
+            }
+        }
+        function getposition(position) {
+            map.style.display = 'inline-block';
+            info.style.display = 'none';
+
+            lat = position.coords.latitude;
+            lon = position.coords.longitude;
+            acc = position.coords.accuracy;
+            dt = position.timestamp;
+
+            mylocation = new google.maps.LatLng(lat, lon);
+            locationspics = { zoom: 17, center: mylocation };
+            var myimage = new Image();
+            myimage.src = new google.maps.Map(map, locationspics);
+            map.appendChild(myimage);
+        }
+
+        function getlocationinfos(){
+            map.style.display = 'none';
+            info.style.display = 'inline-block';
+
+            latTxt.value = lat;
+            longTxt.value = lon;
+            accTxt.value = acc;
+            d = new Date(dt*1000);
+            timeTxt.value = d.toGMTString();
+            
+            
+
+        }
+
+        function errorhandeler(error) {
+            switch(error.code)
+            {
+                case error.PERMISSION_DENIED:
+                    map.innerText = 'PERMISSION Denied';
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    map.innerText = 'POSITION_UNAVAILABLE';
+                    break;
+                case error.TIMEOUT:
+                    map.innerText = 'TIMEOUT';
+                    break;
+                case error.UNKOWN_ERROR:
+                    map.innerText = 'UNKOWN_ERROR';
+                    break;
+            }
+        }
+            
+    </script>
+</head>
+<body>
+    <section id="main">
+        <section class="top" id="top">
+            <input type="button" value="Display Map" id="displayMap" onclick="getmylocation();">
+            <input type="button" value="Detailed Information" id="info" onclick="getlocationinfos()">
+        </section>
+        <section id="buttom">
+            
+        </section>
+        <section id="buttom2">
+            <div id="divInfo">
+                <p>Latitude (degree)</p>
+                <input type="text" id="latTxt">
+                <p>Longitude (degree)</p>
+                <input type="text" id="longTxt">
+                <p>Accuracy (m)</p>
+                <input type="text" id="accTxt">
+                <p>TimeStamp (Current time and date)</p>
+                <input type="text" id="timeTxt">
+            </div>
+        </section>
+
+    </section>
+</body>
+</html>
